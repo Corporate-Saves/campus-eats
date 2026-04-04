@@ -4,7 +4,8 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        primary: "#FF6B35",
+        /* Prefer --tenant-primary via @theme in globals.css; fallback for tooling */
+        primary: "var(--tenant-primary, #FF6B35)",
         background: "#FAFAF8",
         surface: "#FFFFFF",
         text: "#1A1A1A",

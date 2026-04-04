@@ -3,15 +3,15 @@ import Link from "next/link";
 const links = [
   { href: "/login", label: "Login" },
   { href: "/register", label: "Register" },
-  { href: "/dashboard", label: "Student · Dashboard" },
-  { href: "/menu", label: "Student · Menu" },
-  { href: "/orders", label: "Student · Orders" },
-  { href: "/wallet", label: "Student · Wallet" },
-  { href: "/queue", label: "Staff · Queue" },
+  { href: "/student/dashboard", label: "Student · Dashboard" },
+  { href: "/student/menu", label: "Student · Menu" },
+  { href: "/student/orders", label: "Student · Orders" },
+  { href: "/student/wallet", label: "Student · Wallet" },
+  { href: "/staff/queue", label: "Staff · Queue" },
   { href: "/owner/menu", label: "Owner · Menu" },
-  { href: "/analytics", label: "Owner · Analytics" },
-  { href: "/tenants", label: "Admin · Tenants" },
-  { href: "/institutions", label: "Admin · Institutions" },
+  { href: "/owner/analytics", label: "Owner · Analytics" },
+  { href: "/admin/tenants", label: "Admin · Tenants" },
+  { href: "/admin/institutions", label: "Admin · Institutions" },
 ];
 
 export default function Home() {
