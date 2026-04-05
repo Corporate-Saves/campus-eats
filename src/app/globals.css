@@ -15,3 +15,22 @@
   --font-sans: ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, monospace;
 }
+
+@keyframes staff-queue-card-in {
+  from {
+    opacity: 0;
+    transform: translateX(-14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.staff-queue-card-enter {
+  animation: staff-queue-card-in 0.5s ease-out;
+}
+
+.staff-queue-card-highlight {
+  box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.65);
+}

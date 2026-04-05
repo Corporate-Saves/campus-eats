@@ -22,6 +22,12 @@ export function roleAllowedForPathname(
 ): boolean {
   if (!role) return false;
   if (pathname.startsWith("/student")) return role === "student";
+  if (
+    pathname.startsWith("/staff/queue") ||
+    pathname.startsWith("/staff/availability")
+  ) {
+    return role === "canteen_staff" || role === "canteen_owner";
+  }
   if (pathname.startsWith("/staff")) return role === "canteen_staff";
   if (pathname.startsWith("/owner")) return role === "canteen_owner";
   if (pathname.startsWith("/admin/tenants"))
