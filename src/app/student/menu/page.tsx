@@ -57,6 +57,7 @@ export default async function StudentMenuPage() {
     )
     .eq("canteen_id", canteenId)
     .eq("is_available", true)
+    .is("deleted_at", null)
     .order("name", { ascending: true });
 
   const categories: MenuCategoryDTO[] = (categoryRows ?? []).map((c) => ({

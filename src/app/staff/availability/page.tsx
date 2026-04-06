@@ -54,6 +54,7 @@ export default async function StaffAvailabilityPage() {
       "id, category_id, name, price, is_available, max_daily_quantity, prepared_quantity",
     )
     .eq("canteen_id", canteenId)
+    .is("deleted_at", null)
     .order("name", { ascending: true });
 
   const categories: MenuCategoryDTO[] = (categoryRows ?? []).map((c) => ({
