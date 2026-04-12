@@ -56,9 +56,9 @@ export function SlotCard({
       </div>
       <div className="mt-3">
         <div className="mb-1 flex justify-between text-xs text-muted">
-          <span>Capacity</span>
+          <span>Today</span>
           <span>
-            {filled} / {max} slots filled
+            {filled} / {max} orders
           </span>
         </div>
         <div className="h-2 overflow-hidden rounded-full bg-background">

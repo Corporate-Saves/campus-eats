@@ -103,6 +103,21 @@ export function StudentCheckout({
   }, [loadSlots]);
 
   useEffect(() => {
+    const id = setInterval(() => {
+      void loadSlots();
+    }, 12_000);
+    return () => clearInterval(id);
+  }, [loadSlots]);
+
+  useEffect(() => {
+    const onVis = () => {
+      if (document.visibilityState === "visible") void loadSlots();
+    };
+    document.addEventListener("visibilitychange", onVis);
+    return () => document.removeEventListener("visibilitychange", onVis);
+  }, [loadSlots]);
+
+  useEffect(() => {
     if (useCartStore.persist.hasHydrated()) {
       setCartHydrated(true);
       return;

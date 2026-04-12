@@ -9,6 +9,7 @@ const links = [
   { href: "/student/wallet", label: "Student · Wallet" },
   { href: "/staff/queue", label: "Staff · Queue" },
   { href: "/owner/menu", label: "Owner · Menu" },
+  { href: "/owner/slots", label: "Owner · Slots" },
   { href: "/owner/analytics", label: "Owner · Analytics" },
   { href: "/admin/tenants", label: "Admin · Tenants" },
   { href: "/admin/institutions", label: "Admin · Institutions" },
