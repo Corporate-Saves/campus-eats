@@ -60,7 +60,7 @@ export function LoginForm() {
 
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
-      .select("role")
+      .select("role, institution_id")
       .eq("id", user.id)
       .maybeSingle();
 
@@ -74,6 +74,26 @@ export function LoginForm() {
       toast.error("No profile found. Please register first.");
       setSubmitting(false);
       return;
+    }
+
+    if (
+      profile.role !== "super_admin" &&
+      profile.institution_id
+    ) {
+      const { data: inst, error: instErr } = await supabase
+        .from("institutions")
+        .select("is_active, deleted_at")
+        .eq("id", profile.institution_id)
+        .maybeSingle();
+
+      if (instErr || !inst || !inst.is_active || inst.deleted_at != null) {
+        await supabase.auth.signOut();
+        toast.error(
+          "This institution is not available. Contact your administrator.",
+        );
+        setSubmitting(false);
+        return;
+      }
     }
 
     await queryClient.invalidateQueries({ queryKey: ["profile"] });
@@ -94,12 +114,20 @@ export function LoginForm() {
     router.refresh();
   });
 
+  const tenantNotice = searchParams.get("tenant") === "unavailable";
+
   return (
     <>
       <h2 className="text-xl font-semibold text-text">Sign in</h2>
       <p className="mt-1 text-sm text-muted">
         Use your campus email and password.
       </p>
+      {tenantNotice ? (
+        <p className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-950 dark:border-amber-900/50 dark:bg-amber-950/30 dark:text-amber-100">
+          Your institution is inactive or no longer available. Contact your
+          administrator if this is unexpected.
+        </p>
+      ) : null}
 
       <form className="mt-6 space-y-4" onSubmit={onSubmit} noValidate>
         <div>

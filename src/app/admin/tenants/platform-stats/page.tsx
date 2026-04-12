@@ -1,16 +1,16 @@
 import { redirect } from "next/navigation";
-import { SuperAdminTenantsClient } from "@/components/superadmin/SuperAdminTenantsClient";
+import { SuperAdminPlatformStatsClient } from "@/components/superadmin/SuperAdminPlatformStatsClient";
 import { dashboardPathForRole } from "@/lib/auth/role-routes";
 import { createClient } from "@/lib/supabase/server";
 
-export default async function AdminTenantsPage() {
+export default async function AdminPlatformStatsPage() {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect("/login?next=/admin/tenants");
+    redirect("/login?next=/admin/tenants/platform-stats");
   }
 
   const { data: profile } = await supabase
@@ -29,7 +29,7 @@ export default async function AdminTenantsPage() {
 
   return (
     <main className="mx-auto max-w-6xl px-3 py-4 sm:px-5 sm:py-6 lg:max-w-[1400px] lg:px-8">
-      <SuperAdminTenantsClient />
+      <SuperAdminPlatformStatsClient />
     </main>
   );
 }

@@ -18,14 +18,14 @@ export async function GET(_request: Request, { params }: RouteParams) {
     const admin = createAdminClient();
     const { data, error } = await admin
       .from("institutions")
-      .select("id, slug, domain_whitelist, is_active")
+      .select("id, slug, domain_whitelist, is_active, deleted_at")
       .eq("slug", normalized)
       .maybeSingle();
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
-    if (!data || !data.is_active) {
+    if (!data || !data.is_active || data.deleted_at != null) {
       return NextResponse.json({ error: "Institution not found" }, { status: 404 });
     }
 

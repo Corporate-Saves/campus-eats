@@ -60,7 +60,7 @@ export async function middleware(request: NextRequest) {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("role")
+    .select("role, institution_id")
     .eq("id", user.id)
     .maybeSingle();
 
@@ -70,6 +70,35 @@ export async function middleware(request: NextRequest) {
     const url = request.nextUrl.clone();
     url.pathname = "/register";
     return NextResponse.redirect(url);
+  }
+
+  if (role !== "super_admin" && profile?.institution_id) {
+    const { data: inst } = await supabase
+      .from("institutions")
+      .select("is_active, deleted_at")
+      .eq("id", profile.institution_id)
+      .maybeSingle();
+
+    if (!inst || !inst.is_active || inst.deleted_at != null) {
+      await supabase.auth.signOut();
+      const url = request.nextUrl.clone();
+      url.pathname = "/login";
+      url.searchParams.set("tenant", "unavailable");
+      const redirectResponse = NextResponse.redirect(url);
+      const hdrs = supabaseResponse.headers;
+      const getSetCookie = (
+        hdrs as unknown as { getSetCookie?: () => string[] }
+      ).getSetCookie;
+      if (typeof getSetCookie === "function") {
+        for (const c of getSetCookie.call(hdrs)) {
+          redirectResponse.headers.append("Set-Cookie", c);
+        }
+      } else {
+        const single = hdrs.get("set-cookie");
+        if (single) redirectResponse.headers.append("Set-Cookie", single);
+      }
+      return redirectResponse;
+    }
   }
 
   if (!roleAllowedForPathname(role, pathname)) {
