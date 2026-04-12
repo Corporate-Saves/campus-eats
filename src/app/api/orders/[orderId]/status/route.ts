@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { notifyStudentOrderStatus } from "@/lib/notifications";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import {
@@ -124,6 +125,8 @@ export async function PATCH(request: Request, context: RouteParams) {
       }
       return NextResponse.json({ error: rpcError.message }, { status: 400 });
     }
+
+    await notifyStudentOrderStatus(orderRow.student_id, orderId, "CANCELLED");
   } else {
     const { error: rpcTransitionError } = await admin.rpc(
       "staff_transition_order_status",
@@ -162,6 +165,8 @@ export async function PATCH(request: Request, context: RouteParams) {
         { status: 400 },
       );
     }
+
+    await notifyStudentOrderStatus(orderRow.student_id, orderId, nextStatus);
   }
 
   const { data: full, error: fullError } = await admin
