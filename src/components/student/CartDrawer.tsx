@@ -3,6 +3,7 @@
 import { Minus, Plus, ShoppingBag, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import toast from "react-hot-toast";
 import { cn } from "@/lib/utils";
 import { useCartStore } from "@/store/cartStore";
 
@@ -117,7 +118,10 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
                     <button
                       type="button"
                       className="ml-1 text-xs text-muted underline"
-                      onClick={() => removeItem(line.menu_item_id)}
+                      onClick={() => {
+                        removeItem(line.menu_item_id);
+                        toast.success("Removed from cart", { duration: 1200 });
+                      }}
                     >
                       Remove
                     </button>

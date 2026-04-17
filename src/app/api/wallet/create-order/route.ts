@@ -3,6 +3,8 @@ import Razorpay from "razorpay";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 
+export const runtime = "nodejs";
+
 const bodySchema = z.object({
   amount: z.coerce
     .number()

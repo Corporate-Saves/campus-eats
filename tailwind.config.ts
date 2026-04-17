@@ -3,6 +3,15 @@ import type { Config } from "tailwindcss";
 const config: Config = {
   theme: {
     extend: {
+      keyframes: {
+        "skeleton-shimmer": {
+          "0%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(100%)" },
+        },
+      },
+      animation: {
+        "skeleton-shimmer": "skeleton-shimmer 1.35s ease-in-out infinite",
+      },
       colors: {
         /* Prefer --tenant-primary via @theme in globals.css; fallback for tooling */
         primary: "var(--tenant-primary, #FF6B35)",

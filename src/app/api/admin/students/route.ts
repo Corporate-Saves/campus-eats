@@ -3,6 +3,8 @@ import { requireInstitutionAdminApi } from "@/lib/auth/require-institution-admin
 import { adminFindUserByEmail } from "@/lib/supabase/admin-auth-users";
 import { createAdminClient } from "@/lib/supabase/admin";
 
+export const runtime = "nodejs";
+
 const PAGE_SIZE_DEFAULT = 20;
 const PAGE_SIZE_MAX = 50;
 

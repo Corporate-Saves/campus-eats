@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
 import { cn } from "@/lib/utils";
 import { useCartStore } from "@/store/cartStore";
 
@@ -76,6 +77,7 @@ export function ItemCard({
       setBounce(false);
     }, 220);
     addItem({ canteen_id: canteenId, menu_item_id: id, name, price });
+    toast.success("Added to cart", { duration: 1400 });
   };
 
   return (

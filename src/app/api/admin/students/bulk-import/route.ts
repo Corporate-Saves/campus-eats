@@ -6,6 +6,8 @@ import { formatZodBodyError } from "@/lib/zod-api-error";
 import { adminFindUserByEmail } from "@/lib/supabase/admin-auth-users";
 import { createAdminClient } from "@/lib/supabase/admin";
 
+export const runtime = "nodejs";
+
 const rowSchema = z.object({
   full_name: z.string().min(1).max(200).trim(),
   student_id: z.string().min(1).max(100).trim(),

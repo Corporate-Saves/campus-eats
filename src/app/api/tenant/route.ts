@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 
+export const runtime = "edge";
+
 /**
  * Public institution branding for login/register (?slug=).
  * Does not expose internal ids. No auth. Scoped lookup by slug only.

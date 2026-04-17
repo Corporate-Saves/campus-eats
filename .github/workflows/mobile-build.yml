@@ -1,0 +1,95 @@
+# Native shells + Cap sync for manual store submission.
+# Note: `output: export` conflicts with `src/app/api/**` Route Handlers.
+# Export step may fail; workflow falls back to minimal `out/` so `cap sync` still runs.
+# Prefer setting repo secret `CAPACITOR_SERVER_URL` to hosted Next deployment; bake into sync via env.
+
+name: Mobile native projects
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: mobile-build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Static export (optional)
+        env:
+          CAPACITOR_STATIC_EXPORT: "1"
+        run: |
+          set +e
+          npx next build
+          code=$?
+          set -e
+          if [ "$code" -ne 0 ]; then
+            echo "::warning::Next static export failed (API routes). Using placeholder out/ — set CAPACITOR_SERVER_URL in capacitor.config at release time."
+            mkdir -p out
+            printf '%s\n' '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>CampusEats</title></head><body><p>Web bundle placeholder. Point <code>server.url</code> / CAPACITOR_SERVER_URL at deployed app for production shell.</p></body></html>' > out/index.html
+          fi
+
+      - name: Capacitor sync
+        env:
+          CAPACITOR_SERVER_URL: ${{ secrets.CAPACITOR_SERVER_URL }}
+        run: npx cap sync android
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-project
+          path: android/
+
+  ios:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: CocoaPods (for cap add ios)
+        run: command -v pod >/dev/null 2>&1 || brew install cocoapods
+
+      - name: Ensure iOS platform
+        run: test -d ios || npx cap add ios
+
+      - name: Static export (optional)
+        env:
+          CAPACITOR_STATIC_EXPORT: "1"
+        run: |
+          set +e
+          npx next build
+          code=$?
+          set -e
+          if [ "$code" -ne 0 ]; then
+            echo "::warning::Next static export failed (API routes). Using placeholder out/ — set CAPACITOR_SERVER_URL in capacitor.config at release time."
+            mkdir -p out
+            printf '%s\n' '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>CampusEats</title></head><body><p>Web bundle placeholder. Point <code>server.url</code> / CAPACITOR_SERVER_URL at deployed app for production shell.</p></body></html>' > out/index.html
+          fi
+
+      - name: Capacitor sync
+        env:
+          CAPACITOR_SERVER_URL: ${{ secrets.CAPACITOR_SERVER_URL }}
+        run: npx cap sync ios
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ios-project
+          path: ios/

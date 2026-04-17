@@ -12,8 +12,10 @@ import {
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
+import { API_ERROR_MESSAGE, toastApiError } from "@/lib/api-toast";
 import { useProfile } from "@/hooks/useProfile";
 import { createClient } from "@/lib/supabase/client";
+import { isNativePlatform, triggerHaptic } from "@/lib/capacitor";
 import { cn } from "@/lib/utils";
 import type {
   OrderStatus,
@@ -166,6 +168,9 @@ export function OrderTracker({
   useEffect(() => {
     const prev = prevStatusRef.current;
     if (prev !== "READY" && order.status === "READY") {
+      if (isNativePlatform()) {
+        void triggerHaptic("success");
+      }
       if (
         typeof window !== "undefined" &&
         typeof Notification !== "undefined" &&
@@ -205,7 +210,7 @@ export function OrderTracker({
         order?: OrderTrackerInitial;
       };
       if (!res.ok) {
-        toast.error(body.error ?? "Could not cancel order");
+        toast.error(body.error ?? API_ERROR_MESSAGE);
         return;
       }
       if (body.order) {
@@ -220,7 +225,7 @@ export function OrderTracker({
       toast.success("Order cancelled. Refund added to your wallet.");
       void refetchProfile();
     } catch {
-      toast.error("Network error");
+      toastApiError();
     } finally {
       setCancelling(false);
     }

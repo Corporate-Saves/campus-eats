@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
+import { API_ERROR_MESSAGE, toastApiError } from "@/lib/api-toast";
 import { createClient } from "@/lib/supabase/client";
 import { useTenant } from "@/context/TenantContext";
 import { useProfile } from "@/hooks/useProfile";
@@ -79,14 +80,14 @@ export function StudentCheckout({
       ]);
 
     if (slotErr) {
-      toast.error(slotErr.message);
+      toast.error(slotErr.message || API_ERROR_MESSAGE);
       setSlots([]);
     } else {
       setSlots((slotRows ?? []) as TimeSlotRow[]);
     }
 
     if (countErr) {
-      toast.error(countErr.message);
+      toast.error(countErr.message || API_ERROR_MESSAGE);
       setCounts({});
     } else {
       const map: Record<string, number> = {};
@@ -171,21 +172,23 @@ export function StudentCheckout({
       };
 
       if (!res.ok) {
-        toast.error(payload.error ?? "Could not place order");
+        toast.error(payload.error ?? API_ERROR_MESSAGE);
         return;
       }
 
       if (!payload.order?.id) {
-        toast.error("Order created but response was incomplete");
+        toastApiError();
         return;
       }
 
       clearCart();
       await refetchProfile();
-      toast.success(`Order placed · Token #${payload.order.token_number ?? "—"}`);
+      toast.success(
+        `Order placed! Token #${payload.order.token_number ?? "—"} 🎉`,
+      );
       router.push(`/student/orders/${payload.order.id}`);
     } catch {
-      toast.error("Network error");
+      toastApiError();
     } finally {
       setSubmitting(false);
     }

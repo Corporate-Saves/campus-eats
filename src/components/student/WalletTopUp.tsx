@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useCallback, useRef, useState } from "react";
 import toast from "react-hot-toast";
+import { API_ERROR_MESSAGE, toastApiError } from "@/lib/api-toast";
 import { useProfile } from "@/hooks/useProfile";
 import { useTenant } from "@/context/TenantContext";
 import { cn } from "@/lib/utils";
@@ -91,7 +92,7 @@ export function WalletTopUp({
         });
         const data = (await res.json()) as CreateOrderResponse;
         if (!res.ok) {
-          toast.error(data.error ?? "Could not start payment");
+          toast.error(data.error ?? API_ERROR_MESSAGE);
           return;
         }
 
@@ -135,7 +136,7 @@ export function WalletTopUp({
                 duplicate?: boolean;
               };
               if (!verifyRes.ok || !verifyJson.success) {
-                toast.error(verifyJson.error ?? "Payment verification failed");
+                toast.error(verifyJson.error ?? API_ERROR_MESSAGE);
                 return;
               }
               const added = verifyJson.amount ?? amountRupees;
@@ -147,7 +148,7 @@ export function WalletTopUp({
               await refetchProfile();
               router.refresh();
             } catch {
-              toast.error("Verification request failed");
+              toastApiError();
             } finally {
               inFlight.current = false;
               setBusy(false);
@@ -164,7 +165,11 @@ export function WalletTopUp({
         const rzp = new Razorpay(options);
         rzp.open();
       } catch (e) {
-        toast.error(e instanceof Error ? e.message : "Something went wrong");
+        if (e instanceof Error && e.message) {
+          toast.error(e.message);
+        } else {
+          toastApiError();
+        }
         inFlight.current = false;
         setBusy(false);
       }

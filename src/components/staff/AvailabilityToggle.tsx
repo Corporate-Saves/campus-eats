@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { API_ERROR_MESSAGE, toastApiError } from "@/lib/api-toast";
 import type { StaffAvailabilityItem } from "@/types/staff-availability";
 
 function mapItem(raw: Record<string, unknown>): StaffAvailabilityItem {
@@ -47,15 +48,20 @@ export function AvailabilityToggle({
       const body = (await res.json()) as { error?: string; item?: unknown };
       if (!res.ok) {
         setValue(!next);
-        toast.error(body.error ?? "Could not update availability");
+        toast.error(body.error ?? API_ERROR_MESSAGE);
         return;
       }
       if (body.item && typeof body.item === "object") {
         onApplied(mapItem(body.item as Record<string, unknown>));
       }
+      if (next) {
+        toast.success("Item marked as available");
+      } else {
+        toast.success("Item marked as unavailable");
+      }
     } catch {
       setValue(!next);
-      toast.error("Network error");
+      toastApiError();
     }
   };
 

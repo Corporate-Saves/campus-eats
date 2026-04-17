@@ -3,6 +3,8 @@ import { requireInstitutionAdminApi } from "@/lib/auth/require-institution-admin
 import { adminFindUserByEmail } from "@/lib/supabase/admin-auth-users";
 import { createAdminClient } from "@/lib/supabase/admin";
 
+export const runtime = "nodejs";
+
 const MAX_ROWS = 5000;
 
 function escapeIlike(s: string) {

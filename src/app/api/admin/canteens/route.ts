@@ -3,6 +3,8 @@ import { NextResponse } from "next/server";
 import { requireInstitutionAdminApi } from "@/lib/auth/require-institution-admin-api";
 import { createAdminClient } from "@/lib/supabase/admin";
 
+export const runtime = "nodejs";
+
 const MAX_BYTES = 5 * 1024 * 1024;
 const ALLOWED = new Set([
   "image/jpeg",

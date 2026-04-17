@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireInstitutionAdminApi } from "@/lib/auth/require-institution-admin-api";
 
+export const runtime = "nodejs";
+
 function utcMonthStart(): string {
   const now = new Date();
   const y = now.getUTCFullYear();

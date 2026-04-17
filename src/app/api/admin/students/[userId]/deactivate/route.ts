@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { requireInstitutionAdminApi } from "@/lib/auth/require-institution-admin-api";
 import { createAdminClient } from "@/lib/supabase/admin";
 
+export const runtime = "nodejs";
+
 type RouteParams = { params: Promise<{ userId: string }> };
 
 /** Long-term ban (~100y) — Supabase uses duration strings on admin.updateUserById */

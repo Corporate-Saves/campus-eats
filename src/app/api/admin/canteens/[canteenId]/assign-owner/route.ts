@@ -5,6 +5,8 @@ import { formatZodBodyError } from "@/lib/zod-api-error";
 import { adminFindUserByEmail } from "@/lib/supabase/admin-auth-users";
 import { createAdminClient } from "@/lib/supabase/admin";
 
+export const runtime = "nodejs";
+
 const bodySchema = z.object({
   email: z.string().email().transform((s) => s.trim().toLowerCase()),
 });

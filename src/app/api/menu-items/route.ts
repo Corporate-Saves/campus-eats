@@ -4,6 +4,8 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { formatZodBodyError } from "@/lib/zod-api-error";
 
+export const runtime = "edge";
+
 const tagEnum = z.enum(["spicy", "bestseller", "new", "healthy"]);
 
 const createSchema = z.object({

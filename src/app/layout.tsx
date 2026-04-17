@@ -1,12 +1,23 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Providers } from "./providers";
 import "./globals.css";
+
+export const viewport: Viewport = {
+  themeColor: "#FF6B35",
+};
 
 export const metadata: Metadata = {
   title: "Campus Eats",
   description: "Campus canteen ordering",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    title: "CampusEats",
+    statusBarStyle: "default",
+  },
   icons: {
-    icon: "/favicon.svg",
+    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
+    apple: "/icon-192.png",
   },
 };
 

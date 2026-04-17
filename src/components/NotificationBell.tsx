@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
+import { API_ERROR_MESSAGE, toastApiError } from "@/lib/api-toast";
 import { createClient } from "@/lib/supabase/client";
 
 type NotificationRow = {
@@ -76,7 +77,7 @@ export function NotificationBell() {
         .order("created_at", { ascending: false })
         .limit(10);
       if (error) {
-        toast.error(error.message);
+        toast.error(error.message || API_ERROR_MESSAGE);
         return;
       }
       setItems((data ?? []) as NotificationRow[]);
@@ -148,19 +149,25 @@ export function NotificationBell() {
   }, [open]);
 
   const markAllRead = async () => {
+    const prevItems = items;
+    const prevUnread = unread;
+    setItems((prev) => prev.map((n) => ({ ...n, is_read: true })));
+    setUnread(0);
     try {
       const res = await fetch("/api/notifications/mark-read", {
         method: "PATCH",
       });
       const body = (await res.json()) as { error?: string };
       if (!res.ok) {
-        toast.error(body.error ?? "Could not mark read");
+        setItems(prevItems);
+        setUnread(prevUnread);
+        toast.error(body.error ?? API_ERROR_MESSAGE);
         return;
       }
-      setItems((prev) => prev.map((n) => ({ ...n, is_read: true })));
-      setUnread(0);
     } catch {
-      toast.error("Network error");
+      setItems(prevItems);
+      setUnread(prevUnread);
+      toastApiError();
     }
   };
 
